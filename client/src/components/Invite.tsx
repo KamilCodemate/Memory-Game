@@ -1,11 +1,17 @@
+import React, { useEffect, useRef } from 'react';
+import CopyToClipboard from './CopyToClipboard';
 type Props = {
-  code: string;
+  code: string | null;
 };
 
 const App: React.FC<Props> = ({ code }): React.ReactElement => {
   return (
-    <div className='codeContainer'>
-      <input type='text' value={code} readOnly />
+    <div className='invitationContainer'>
+      <h1>Invitation link</h1>
+      <div className='codeContainer'>
+        <h3>{code}</h3>
+        <CopyToClipboard text={code} />
+      </div>
     </div>
   );
 };

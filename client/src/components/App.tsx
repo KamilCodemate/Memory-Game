@@ -1,6 +1,8 @@
 import React from 'react';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
+import '../assets/styles/App.scss';
+import Invite from './Invite';
 const App: React.FC<{}> = (): React.ReactElement => {
   const [joinCode, setJoinCode] = useState<null | string>(null);
 
@@ -18,6 +20,10 @@ const App: React.FC<{}> = (): React.ReactElement => {
     downloadCode();
   }, []);
 
-  return <div className='container'></div>;
+  return (
+    <div className='container'>
+      <Invite code={joinCode} />
+    </div>
+  );
 };
 export default App;
