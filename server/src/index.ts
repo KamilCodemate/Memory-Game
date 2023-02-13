@@ -1,7 +1,14 @@
 import express from 'express';
 import uniqid from 'uniqid';
 const app = express();
-
+interface GameData {
+  id: string;
+  players: [player1: string, player2?: string];
+  joinCode: string;
+  card?: Array<card>;
+  ready: boolean;
+}
+let Games: Array<GameData> = [];
 type card = {
   column: number;
   row: number;
@@ -26,16 +33,6 @@ const genrateCards = (): Array<card> => {
   return retArray;
 };
 
-interface GameData {
-  id: string;
-  players: [player1: string, player2?: string];
-  joinCode: string;
-  card?: Array<card>;
-  ready: boolean;
-}
-
-let Games: Array<GameData>;
-
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
@@ -57,4 +54,4 @@ app.post('/api/join', (req, res) => {
   }
 });
 
-app.listen(500);
+app.listen(5000);

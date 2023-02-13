@@ -1,7 +1,7 @@
 import ReactDOM from 'react-dom/client';
-import Invite from './components/Invite';
+import App from './components/App';
 import './index.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 
-root.render(<Invite />);
+root.render(<App />);
