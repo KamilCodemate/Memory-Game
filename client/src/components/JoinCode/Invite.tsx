@@ -1,5 +1,6 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import CopyToClipboard from './CopyToClipboard';
+import '../../assets/styles/Invite.scss';
 type Props = {
   code: string | null;
 };
