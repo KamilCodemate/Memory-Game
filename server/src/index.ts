@@ -40,18 +40,34 @@ app.use(express.json());
 app.get('/api/code', (req, res) => {
   const joinCode = uniqid();
   const playerId = uniqid();
-
-  Games.push({ id: uniqid(), players: [playerId], joinCode: joinCode, ready: false });
-  return res.status(200).json({ sucess: true, joinCode: joinCode });
+  const gameId = uniqid();
+  Games.push({ id: gameId, players: [playerId], joinCode: joinCode, ready: false });
+  return res.status(200).json({ sucess: true, joinCode: joinCode, gameId: gameId });
 });
 
 app.post('/api/join', (req, res) => {
   const playerId = uniqid();
   const joinableCode = req.body.joinCode;
   const correctGame = Games.findIndex((element) => element.joinCode === joinableCode);
-  if (correctGame) {
-    Games[correctGame].players[1] = playerId;
-    Games[correctGame].ready = true;
+
+  if (correctGame === -1) return res.status(404).json({ success: false, errorContent: 'Game not found' });
+  if (Games[correctGame].ready) return res.status(409).json({ success: false, errorContant: 'This game has already started' });
+  Games[correctGame].players[1] = playerId;
+  Games[correctGame].ready = true;
+
+  console.log(Games);
+  return res.status(200).json({ success: true, gameId: Games[correctGame].id });
+});
+
+app.post('/api/checkgame', (req, res) => {
+  const gameId = req.body.gameId;
+
+  if (gameId) {
+    const correctGame = Games.findIndex((element) => element.id === gameId);
+
+    if (correctGame === -1) return res.status(404).json({ success: false, errorContent: 'Invalid game identifier' });
+    if (!Games[correctGame].ready) return res.status(200).json({ success: false, errorContent: 'Game has not started yet' });
+    return res.json({ success: true });
   }
 });
 
