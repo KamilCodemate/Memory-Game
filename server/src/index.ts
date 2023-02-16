@@ -56,7 +56,7 @@ app.post('/api/join', (req, res) => {
   Games[correctGame].ready = true;
 
   console.log(Games);
-  return res.status(200).json({ success: true, gameId: Games[correctGame].id });
+  return res.status(200).json({ success: true, gameId: Games[correctGame].id, playerId: playerId });
 });
 
 app.post('/api/checkgame', (req, res) => {
