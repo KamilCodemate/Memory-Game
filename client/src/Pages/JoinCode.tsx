@@ -2,10 +2,10 @@ import React from 'react';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-
 import '../assets/styles/JoinCode.scss';
 import Invite from '../components/JoinCode/Invite';
 import JoinCodeProvider from '../components/JoinCode/JoinCodeProvider';
+
 const JoinCode: React.FC<{}> = (): React.ReactElement => {
   const navigate = useNavigate();
   const [joinCode, setJoinCode] = useState<null | string>(null);
@@ -68,6 +68,7 @@ const JoinCode: React.FC<{}> = (): React.ReactElement => {
         console.log(err);
       }
     };
+    localStorage.setItem('gameData', JSON.stringify({ gameId: gameId2 ? (gameId2 as string) : (gameId as string), playerId: playerId as string }));
     sendCode();
   };
   return (
@@ -77,4 +78,5 @@ const JoinCode: React.FC<{}> = (): React.ReactElement => {
     </div>
   );
 };
+
 export default JoinCode;

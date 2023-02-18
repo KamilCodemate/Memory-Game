@@ -16,14 +16,23 @@ type card = {
   correctIndetifier: number;
   isShowed: boolean;
 };
-const genrateCards = (): Array<card> => {
+const generateCards = (): Array<card> => {
   let retArray: Array<card> = [];
+  const positionsUsed: { [position: string]: boolean } = {};
 
   for (let i = 0; i < 24; i++) {
     for (let j = 0; j < 2; j++) {
+      let cardPosition: string;
+      do {
+        const column = Math.floor(Math.random() * 7);
+        const row = Math.floor(Math.random() * 6);
+        cardPosition = `${column},${row}`;
+      } while (positionsUsed[cardPosition]);
+
+      positionsUsed[cardPosition] = true;
       const card: card = {
-        column: Math.floor(Math.random() * 7),
-        row: Math.floor(Math.random() * 6),
+        column: Number(cardPosition.split(',')[0]),
+        row: Number(cardPosition.split(',')[1]),
         correctIndetifier: i,
         isShowed: false,
       };
@@ -42,7 +51,7 @@ app.get('/api/code', (req, res) => {
   const playerId = uniqid();
   const gameId = uniqid();
   Games.push({ id: gameId, players: [playerId], joinCode: joinCode, ready: false });
-  return res.status(200).json({ sucess: true, joinCode: joinCode, gameId: gameId });
+  return res.status(200).json({ sucess: true, joinCode: joinCode, gameId: gameId, playerId: playerId });
 });
 
 app.post('/api/join', (req, res) => {
