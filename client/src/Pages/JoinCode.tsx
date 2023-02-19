@@ -13,6 +13,14 @@ const JoinCode: React.FC<{}> = (): React.ReactElement => {
   const [gameId2, setGameId2] = useState<null | string>(null);
   const [playerId, setPlayerId] = useState<null | string>(null);
   const [joinCodeProvider, setJoinCodeProvider] = useState<string>('');
+  const [playerNo, setPlayerNo] = useState<number | null>(null);
+
+  useEffect(() => {
+    localStorage.setItem(
+      'gameData',
+      JSON.stringify({ gameId: gameId2 ? (gameId2 as string) : (gameId as string), playerId: playerId as string, playerNo: playerNo })
+    );
+  }, [joinCode, gameId, gameId2, playerId, joinCodeProvider, playerNo]);
 
   useEffect(() => {
     const downloadCode = async () => {
@@ -22,6 +30,11 @@ const JoinCode: React.FC<{}> = (): React.ReactElement => {
         const joinCode = response.data.joinCode;
         setPlayerId(response.data.playerId);
         setGameId(response.data.gameId);
+        setPlayerNo(0);
+        localStorage.setItem(
+          'gameData',
+          JSON.stringify({ gameId: gameId2 ? (gameId2 as string) : (gameId as string), playerId: playerId as string, playerNo: playerNo })
+        );
         if (response && joinCode) setJoinCode(joinCode);
       } catch (err) {
         console.log(err);
@@ -64,11 +77,17 @@ const JoinCode: React.FC<{}> = (): React.ReactElement => {
       try {
         const response = await axios.post('/api/join', { joinCode: joinCodeProvider });
         setGameId2(response.data.gameId);
+        setGameId(response.data.gameId);
+        setPlayerId(response.data.playerId);
+        setPlayerNo(1);
+        localStorage.setItem(
+          'gameData',
+          JSON.stringify({ gameId: gameId2 ? (gameId2 as string) : (gameId as string), playerId: playerId as string, playerNo: playerNo })
+        );
       } catch (err) {
         console.log(err);
       }
     };
-    localStorage.setItem('gameData', JSON.stringify({ gameId: gameId2 ? (gameId2 as string) : (gameId as string), playerId: playerId as string }));
     sendCode();
   };
   return (

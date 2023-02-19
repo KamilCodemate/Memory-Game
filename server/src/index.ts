@@ -64,7 +64,8 @@ app.post('/api/join', (req, res) => {
   Games[correctGame].players[1] = playerId;
   Games[correctGame].ready = true;
 
-  console.log(Games);
+  console.log(Games[correctGame]);
+
   return res.status(200).json({ success: true, gameId: Games[correctGame].id, playerId: playerId });
 });
 
@@ -78,6 +79,11 @@ app.post('/api/checkgame', (req, res) => {
     if (!Games[correctGame].ready) return res.status(200).json({ success: false, errorContent: 'Game has not started yet' });
     return res.json({ success: true });
   }
+});
+
+app.post('/api/game', (req, res) => {
+  const playerId = req.body.playerId;
+  const gameId = req.body.gameId;
 });
 
 app.listen(5000);
