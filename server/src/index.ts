@@ -13,7 +13,7 @@ let Games: Array<GameData> = [];
 type card = {
   column: number;
   row: number;
-  correctIndetifier: number;
+  correctIndentifier: number;
   isShowed: boolean;
 };
 
@@ -27,7 +27,7 @@ const generateCards = (): Promise<Array<card>> => {
           card = {
             column: Math.floor(Math.random() * 8),
             row: Math.floor(Math.random() * 6),
-            correctIndetifier: i,
+            correctIndentifier: i,
             isShowed: false,
           };
         } while (cardArray.find((element) => element.column === card.column && element.row === card.row));
@@ -77,13 +77,19 @@ app.post('/api/checkgame', (req, res) => {
 });
 
 app.post('/api/game', (req, res) => {
-  const { playerId, gameId, playerNo } = req.body;
+  try {
+    const { playerId, gameId, playerNo } = req.body;
 
-  const correctGameId = Games.findIndex((element) => element.players[playerNo] === playerId && element.id === gameId);
-  if (!correctGameId) return res.status(403).json({ success: false, errorContent: 'Player does not belong to any game' });
-  generateCards().then((cards) => (Games[correctGameId].card = cards));
-  console.log(Games[correctGameId].card);
-  return res.status(200).json({ success: true, cards: Games[correctGameId].card });
+    const correctGameId = Games.findIndex((element) => element.players[playerNo] === playerId && element.id === gameId);
+    if (correctGameId === -1) return res.status(403).json({ success: false, errorContent: 'Player does not belong to any game' });
+    if (!Games[correctGameId].card) {
+      generateCards().then((cards) => (Games[correctGameId].card = cards));
+    }
+    console.log(Games[correctGameId].card);
+    return res.status(200).json({ success: true, cards: Games[correctGameId].card });
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 app.listen(5000);

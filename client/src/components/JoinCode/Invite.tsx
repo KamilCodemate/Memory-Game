@@ -5,7 +5,7 @@ type Props = {
   code: string | null;
 };
 
-const App: React.FC<Props> = ({ code }): React.ReactElement => {
+const Invite: React.FC<Props> = ({ code }): React.ReactElement => {
   return (
     <div className='invitationContainer'>
       <h1>Invitation link</h1>
@@ -16,4 +16,4 @@ const App: React.FC<Props> = ({ code }): React.ReactElement => {
     </div>
   );
 };
-export default App;
+export default Invite;
