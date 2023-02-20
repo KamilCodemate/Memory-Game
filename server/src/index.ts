@@ -16,31 +16,26 @@ type card = {
   correctIndetifier: number;
   isShowed: boolean;
 };
-const generateCards = (): Array<card> => {
-  let retArray: Array<card> = [];
-  const positionsUsed: { [position: string]: boolean } = {};
 
-  for (let i = 0; i < 24; i++) {
-    for (let j = 0; j < 2; j++) {
-      let cardPosition: string;
-      do {
-        const column = Math.floor(Math.random() * 7);
-        const row = Math.floor(Math.random() * 6);
-        cardPosition = `${column},${row}`;
-      } while (positionsUsed[cardPosition]);
-
-      positionsUsed[cardPosition] = true;
-      const card: card = {
-        column: Number(cardPosition.split(',')[0]),
-        row: Number(cardPosition.split(',')[1]),
-        correctIndetifier: i,
-        isShowed: false,
-      };
-      retArray.push(card);
+const generateCards = (): Promise<Array<card>> => {
+  return new Promise((resolve, reject) => {
+    let cardArray: Array<card> = [];
+    for (let i = 0; i < 24; i++) {
+      for (let j = 0; j < 2; j++) {
+        let card: card;
+        do {
+          card = {
+            column: Math.floor(Math.random() * 8),
+            row: Math.floor(Math.random() * 6),
+            correctIndetifier: i,
+            isShowed: false,
+          };
+        } while (cardArray.find((element) => element.column === card.column && element.row === card.row));
+        cardArray.push(card);
+      }
     }
-  }
-
-  return retArray;
+    resolve(cardArray);
+  });
 };
 
 app.use(express.urlencoded({ extended: false }));
@@ -82,8 +77,13 @@ app.post('/api/checkgame', (req, res) => {
 });
 
 app.post('/api/game', (req, res) => {
-  const playerId = req.body.playerId;
-  const gameId = req.body.gameId;
+  const { playerId, gameId, playerNo } = req.body;
+
+  const correctGameId = Games.findIndex((element) => element.players[playerNo] === playerId && element.id === gameId);
+  if (!correctGameId) return res.status(403).json({ success: false, errorContent: 'Player does not belong to any game' });
+  generateCards().then((cards) => (Games[correctGameId].card = cards));
+  console.log(Games[correctGameId].card);
+  return res.status(200).json({ success: true, cards: Games[correctGameId].card });
 });
 
 app.listen(5000);

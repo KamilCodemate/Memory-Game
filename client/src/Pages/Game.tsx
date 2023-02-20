@@ -12,10 +12,12 @@ const Game: React.FC<{}> = (): React.ReactElement => {
     const updateGame = async () => {
       try {
         const response = await axios.post('/api/game', { gameId: gameData.gameId, playerId: gameData.playerId, playerNo: gameData.playerNo });
+        console.log(response);
       } catch (err) {
         console.log(err);
       }
     };
+    updateGame();
   }, []);
   return <div></div>;
 };
