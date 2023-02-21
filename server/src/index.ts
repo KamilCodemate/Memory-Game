@@ -20,13 +20,13 @@ type card = {
 const generateCards = (): Promise<Array<card>> => {
   return new Promise((resolve, reject) => {
     let cardArray: Array<card> = [];
-    for (let i = 0; i < 24; i++) {
+    for (let i = 0; i < 14; i++) {
       for (let j = 0; j < 2; j++) {
         let card: card;
         do {
           card = {
-            column: Math.floor(Math.random() * 8),
-            row: Math.floor(Math.random() * 6),
+            column: Math.floor(Math.random() * 7),
+            row: Math.floor(Math.random() * 4),
             correctIndentifier: i,
             isShowed: false,
           };

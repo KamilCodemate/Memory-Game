@@ -22,8 +22,8 @@ const Game: React.FC<{}> = (): React.ReactElement => {
 
         const cards = response.data.cards;
         let cardSorted: Array<card> = [];
-        for (let i = 0; i < 8; i++) {
-          for (let j = 0; j < 6; j++) {
+        for (let i = 0; i < 7; i++) {
+          for (let j = 0; j < 4; j++) {
             cardSorted.push(cards[cards.findIndex((element: card) => element.column === i && element.row === j)]);
           }
         }
