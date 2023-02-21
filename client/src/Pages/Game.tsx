@@ -12,10 +12,18 @@ const Game: React.FC<{}> = (): React.ReactElement => {
   const [gameData, setGameData] = useState<{ gameId: string; playerId: string; playerNo: number | string }>(
     JSON.parse(localStorage.getItem('gameData') as string)
   );
-  const [cardsPos, setcardPos] = useState<Array<card>>([]);
-  useEffect(() => {
-    console.log(gameData);
 
+  const [cardsPos, setcardPos] = useState<Array<card>>([]);
+
+  const handleClick = (column: number, row: number): void => {
+    const arrayIndex = cardsPos.findIndex((element) => element.column === column && element.row === row);
+
+    let gameDataCpy: Array<card> = cardsPos;
+    gameDataCpy[arrayIndex].isShowed = true;
+    console.log(column, row);
+  };
+
+  useEffect(() => {
     const updateGame = async () => {
       try {
         const response = await axios.post('/api/game', { gameId: gameData.gameId, playerId: gameData.playerId, playerNo: gameData.playerNo });
@@ -27,7 +35,7 @@ const Game: React.FC<{}> = (): React.ReactElement => {
             cardSorted.push(cards[cards.findIndex((element: card) => element.column === i && element.row === j)]);
           }
         }
-        console.log(cardSorted);
+
         setcardPos(cardSorted);
       } catch (err) {
         console.log(err);
@@ -43,7 +51,9 @@ const Game: React.FC<{}> = (): React.ReactElement => {
     <div className='gameContainer'>
       <div className='cardContainer'>
         {cardsPos.map((element) => {
-          return <Card isShowed={element.isShowed} identifier={element.correctIndentifier} />;
+          return (
+            <Card isShowed={element.isShowed} identifier={element.correctIndentifier} handleClick={() => handleClick(element.column, element.row)} />
+          );
         })}
       </div>
     </div>
