@@ -59,8 +59,6 @@ app.post('/api/join', (req, res) => {
   Games[correctGame].players[1] = playerId;
   Games[correctGame].ready = true;
 
-  console.log(Games[correctGame]);
-
   return res.status(200).json({ success: true, gameId: Games[correctGame].id, playerId: playerId });
 });
 
@@ -85,7 +83,7 @@ app.post('/api/game', (req, res) => {
     if (!Games[correctGameId].card) {
       generateCards().then((cards) => (Games[correctGameId].card = cards));
     }
-    console.log(Games[correctGameId].card);
+
     return res.status(200).json({ success: true, cards: Games[correctGameId].card });
   } catch (err) {
     console.log(err);

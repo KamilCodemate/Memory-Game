@@ -12,6 +12,8 @@ const Game: React.FC<{}> = (): React.ReactElement => {
   const [gameData, setGameData] = useState<{ gameId: string; playerId: string; playerNo: number | string }>(
     JSON.parse(localStorage.getItem('gameData') as string)
   );
+  const [turn, setTurn] = useState<boolean>(gameData.playerNo === 0);
+  const [showedCount, setShowedCount] = useState<number>(0);
 
   const [cardsPos, setcardPos] = useState<Array<card>>([]);
 
@@ -23,7 +25,34 @@ const Game: React.FC<{}> = (): React.ReactElement => {
       ...newCardsPos[arrayIndex],
       isShowed: true,
     };
+    setShowedCount(showedCount + 1);
+    if (showedCount === 1) {
+      setShowedCount(0);
 
+      const firstCard = newCardsPos.findIndex((card) => card.isShowed === true);
+      const secondCard = newCardsPos.findIndex(
+        (card) => card.isShowed === true && card.correctIndentifier === newCardsPos[firstCard]?.correctIndentifier
+      );
+      console.log(newCardsPos[firstCard], newCardsPos[secondCard]);
+      setTimeout(() => {
+        if (firstCard !== -1) newCardsPos[firstCard].isShowed = false;
+        if (secondCard !== -1) newCardsPos[secondCard].isShowed = false;
+        newCardsPos.forEach((card) => {
+          card.isShowed = false;
+        });
+        const updateGame = async () => {
+          try {
+            const response = await axios.put('/api/game', {
+              cardData: newCardsPos,
+              gameData: { gameId: gameData.gameId, playerId: gameData.playerId, playerNo: gameData.playerNo },
+            });
+          } catch (err) {
+            console.log(err);
+          }
+        };
+        updateGame();
+      }, 2000);
+    }
     setcardPos(newCardsPos);
     const updateGame = async () => {
       try {
@@ -31,13 +60,11 @@ const Game: React.FC<{}> = (): React.ReactElement => {
           cardData: newCardsPos,
           gameData: { gameId: gameData.gameId, playerId: gameData.playerId, playerNo: gameData.playerNo },
         });
-        console.log(response);
       } catch (err) {
         console.log(err);
       }
     };
     updateGame();
-    console.log(column, row);
   };
 
   useEffect(() => {
@@ -58,7 +85,7 @@ const Game: React.FC<{}> = (): React.ReactElement => {
         console.log(err);
       }
     };
-    const sendReq = setInterval(updateGame, 200);
+    const sendReq = setInterval(updateGame, 2000);
     updateGame();
     return () => {
       clearInterval(sendReq);

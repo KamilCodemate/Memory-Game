@@ -17,7 +17,7 @@ const Card: React.FC<Props> = ({ identifier, isShowed, handleClick }): React.Rea
   let displayImage: string;
   let returnContent: React.ReactElement;
   if (isShowed) {
-    displayImage = Images[`img${identifier}` as ImageKey];
+    displayImage = Images[`img${identifier + 1}` as ImageKey];
     returnContent = <div className='card' style={{ backgroundImage: `url(${displayImage})` }} onClick={handleClick}></div>;
   } else {
     returnContent = <div className='card' onClick={handleClick}></div>;
