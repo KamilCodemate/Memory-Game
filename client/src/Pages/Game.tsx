@@ -18,8 +18,13 @@ const Game: React.FC<{}> = (): React.ReactElement => {
   const handleClick = (column: number, row: number): void => {
     const arrayIndex = cardsPos.findIndex((element) => element.column === column && element.row === row);
 
-    let gameDataCpy: Array<card> = cardsPos;
-    gameDataCpy[arrayIndex].isShowed = true;
+    const newCardsPos = [...cardsPos];
+    newCardsPos[arrayIndex] = {
+      ...newCardsPos[arrayIndex],
+      isShowed: true,
+    };
+
+    setcardPos(newCardsPos);
     console.log(column, row);
   };
 
@@ -30,9 +35,9 @@ const Game: React.FC<{}> = (): React.ReactElement => {
 
         const cards = response.data.cards;
         let cardSorted: Array<card> = [];
-        for (let i = 0; i < 7; i++) {
-          for (let j = 0; j < 4; j++) {
-            cardSorted.push(cards[cards.findIndex((element: card) => element.column === i && element.row === j)]);
+        for (let i = 0; i < 4; i++) {
+          for (let j = 0; j < 7; j++) {
+            cardSorted.push(cards[cards.findIndex((element: card) => element.column === j && element.row === i)]);
           }
         }
 
@@ -52,7 +57,12 @@ const Game: React.FC<{}> = (): React.ReactElement => {
       <div className='cardContainer'>
         {cardsPos.map((element) => {
           return (
-            <Card isShowed={element.isShowed} identifier={element.correctIndentifier} handleClick={() => handleClick(element.column, element.row)} />
+            <Card
+              key={`SingleCard:Column${element.column}:Row${element.row}`}
+              isShowed={element.isShowed}
+              identifier={element.correctIndentifier}
+              handleClick={() => handleClick(element.column, element.row)}
+            />
           );
         })}
       </div>
