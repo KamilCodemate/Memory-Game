@@ -1,9 +1,10 @@
 .card {
   background-color: black;
-  width: 10vw;
-  height: 23vh;
+  width: 11vw;
   border-radius: 10px;
   border: 1px solid black;
+  position: relative;
+  padding-top: 56.25%;
 }
 .card:hover {
   cursor: pointer;

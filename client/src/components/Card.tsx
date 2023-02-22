@@ -1,4 +1,4 @@
-import React, { MouseEventHandler } from 'react';
+import React, { MouseEventHandler, useEffect } from 'react';
 import Images, { ImgType } from '../assets/images/imgExport';
 import '../assets/styles/Card.scss';
 type Props = {
@@ -10,6 +10,10 @@ type Props = {
 type ImageKey = keyof ImgType;
 
 const Card: React.FC<Props> = ({ identifier, isShowed, handleClick }): React.ReactElement => {
+  useEffect(() => {
+    console.log(Images);
+  }, []);
+
   let displayImage: string;
   let returnContent: React.ReactElement;
   if (isShowed) {

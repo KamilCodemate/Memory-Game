@@ -2,16 +2,21 @@
   width: 100vw;
   height: 100vh;
   background-color: #3a3a3a;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
 }
 .cardContainer {
   display: grid;
   grid-template-columns: repeat(7, auto);
   grid-template-rows: repeat(4, auto);
-  width: 85vw;
-  height: 100vh;
+  min-width: 85vw;
+  height: fit-content;
   overflow: hidden;
   gap: 10px;
   align-items: center;
   justify-content: flex-start;
   padding-left: 5px;
+  position: relative;
+  bottom: 5vh;
 }

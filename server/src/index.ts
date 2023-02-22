@@ -92,4 +92,13 @@ app.post('/api/game', (req, res) => {
   }
 });
 
+app.put('/api/game', (req, res) => {
+  const { cardData, gameData } = req.body;
+  const correctGameId = Games.findIndex((element) => element.players[gameData.playerNo] === gameData.playerId && element.id === gameData.gameId);
+  if (correctGameId === -1) return res.status(403).json({ success: false, errorContent: 'Player does not belong to any game' });
+
+  Games[correctGameId].card = cardData;
+  return res.status(200).json({ success: true });
+});
+
 app.listen(5000);

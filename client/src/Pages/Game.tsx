@@ -25,6 +25,18 @@ const Game: React.FC<{}> = (): React.ReactElement => {
     };
 
     setcardPos(newCardsPos);
+    const updateGame = async () => {
+      try {
+        const response = await axios.put('/api/game', {
+          cardData: newCardsPos,
+          gameData: { gameId: gameData.gameId, playerId: gameData.playerId, playerNo: gameData.playerNo },
+        });
+        console.log(response);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    updateGame();
     console.log(column, row);
   };
 
