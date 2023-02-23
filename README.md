@@ -3,11 +3,13 @@
 ### Multiplayer Memory Game made with React, Node, Express, TypeScript
 
 <br>
+
 ## Running the Game
+
 #### Reqirements:
-<ol>
-Node.js at least in version 18.0.0
-</ol>
+
+* Node.js at least in version 18.0.0
+
 
 #### Steps:
 
