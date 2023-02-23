@@ -9,3 +9,5 @@ type Props = {
 const ScoreBoard: React.FC<Props> = ({ p1Points, p2Points, actualTurn }): React.ReactElement => {
   return <div></div>;
 };
+
+export default ScoreBoard;

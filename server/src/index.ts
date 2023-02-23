@@ -8,7 +8,7 @@ interface GameData {
   joinCode: string;
   card?: Array<card>;
   ready: boolean;
-  playerPoints?: [player1: number, player2: number];
+  playerPoints?: [p1Points: number, p2Points: number];
   playerTurn?: number;
 }
 let Games: Array<GameData> = [];
@@ -49,8 +49,8 @@ app.get('/api/code', (req, res) => {
   const joinCode = uniqid();
   const playerId = uniqid();
   const gameId = uniqid();
-  Games.push({ id: gameId, players: [playerId], joinCode: joinCode, ready: false, playerTurn: 0 });
-  return res.status(200).json({ sucess: true, joinCode: joinCode, gameId: gameId, playerId: playerId });
+  Games.push({ id: gameId, players: [playerId], joinCode: joinCode, ready: false, playerTurn: 0, playerPoints: [0, 0] });
+  return res.status(200).json({ sucess: true, joinCode: joinCode, gameId: gameId, playerId: playerId, playerPoints: [0, 0] });
 });
 
 app.post('/api/join', (req, res) => {
@@ -88,14 +88,20 @@ app.post('/api/game', (req, res) => {
       generateCards().then((cards) => (Games[correctGameId].card = cards));
     }
 
-    return res.status(200).json({ success: true, cards: Games[correctGameId].card, playerTurn: Games[correctGameId].playerTurn });
+    console.log(Games[correctGameId].playerPoints);
+    return res.status(200).json({
+      success: true,
+      cards: Games[correctGameId].card,
+      playerTurn: Games[correctGameId].playerTurn,
+      playerPoints: Games[correctGameId].playerPoints,
+    });
   } catch (err) {
     console.log(err);
   }
 });
 
 app.put('/api/game', (req, res) => {
-  const { cardData, gameData, playerTurn } = req.body;
+  const { cardData, gameData } = req.body;
   let nextTurn: boolean | null | undefined;
 
   try {
@@ -107,7 +113,9 @@ app.put('/api/game', (req, res) => {
   if (correctGameId === -1) return res.status(403).json({ success: false, errorContent: 'Player does not belong to any game' });
 
   Games[correctGameId].card = cardData;
-  console.log(nextTurn);
+  if (gameData.playerPoints) Games[correctGameId].playerPoints = gameData.playerPoints;
+  console.log(gameData.playerPoints);
+
   if (nextTurn) {
     Games[correctGameId].playerTurn = Games[correctGameId].playerTurn === 0 ? 1 : 0;
   }

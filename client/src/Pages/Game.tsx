@@ -44,23 +44,26 @@ const Game: React.FC<{}> = (): React.ReactElement => {
             newCardsPos.forEach((card) => {
               card.isShowed = false;
             });
+            let newPoints = points;
             if (secondCard && firstCard) {
               firstCard.isDeleted = true;
               secondCard.isDeleted = true;
-              const newPoints = points;
+
               newPoints[gameData.playerNo as number] += 1;
-              setPoints(newPoints);
-              console.log(points);
+
+              console.log(newPoints);
             }
 
             const updateGame = async () => {
               try {
+                console.log(newPoints);
                 const response = await axios.put('/api/game', {
                   cardData: newCardsPos,
                   gameData: {
                     gameId: gameData.gameId,
                     playerId: gameData.playerId,
                     playerNo: gameData.playerNo,
+                    playerPoints: newPoints,
                   },
                   nextTurn: true,
                 });
@@ -111,6 +114,9 @@ const Game: React.FC<{}> = (): React.ReactElement => {
           } else {
             changeLock(false);
           }
+
+          setPoints(response.data.playerPoints || [0, 0]);
+          console.log(response);
 
           const cards = response.data.cards;
           let cardSorted: Array<card> = [];
