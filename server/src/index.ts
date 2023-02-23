@@ -8,6 +8,8 @@ interface GameData {
   joinCode: string;
   card?: Array<card>;
   ready: boolean;
+  playerPoints?: [player1: number, player2: number];
+  playerTurn?: number;
 }
 let Games: Array<GameData> = [];
 type card = {
@@ -45,7 +47,7 @@ app.get('/api/code', (req, res) => {
   const joinCode = uniqid();
   const playerId = uniqid();
   const gameId = uniqid();
-  Games.push({ id: gameId, players: [playerId], joinCode: joinCode, ready: false });
+  Games.push({ id: gameId, players: [playerId], joinCode: joinCode, ready: false, playerTurn: 0 });
   return res.status(200).json({ sucess: true, joinCode: joinCode, gameId: gameId, playerId: playerId });
 });
 
@@ -84,19 +86,30 @@ app.post('/api/game', (req, res) => {
       generateCards().then((cards) => (Games[correctGameId].card = cards));
     }
 
-    return res.status(200).json({ success: true, cards: Games[correctGameId].card });
+    return res.status(200).json({ success: true, cards: Games[correctGameId].card, playerTurn: Games[correctGameId].playerTurn });
   } catch (err) {
     console.log(err);
   }
 });
 
 app.put('/api/game', (req, res) => {
-  const { cardData, gameData } = req.body;
+  const { cardData, gameData, playerTurn } = req.body;
+  let nextTurn: boolean | null | undefined;
+
+  try {
+    nextTurn = req.body.nextTurn;
+  } catch (err) {
+    console.log(err);
+  }
   const correctGameId = Games.findIndex((element) => element.players[gameData.playerNo] === gameData.playerId && element.id === gameData.gameId);
   if (correctGameId === -1) return res.status(403).json({ success: false, errorContent: 'Player does not belong to any game' });
 
   Games[correctGameId].card = cardData;
-  return res.status(200).json({ success: true });
+  console.log(nextTurn);
+  if (nextTurn) {
+    Games[correctGameId].playerTurn = Games[correctGameId].playerTurn === 0 ? 1 : 0;
+  }
+  return res.status(200).json({ success: true, playerTurn: Games[correctGameId].playerTurn });
 });
 
 app.listen(5000);
