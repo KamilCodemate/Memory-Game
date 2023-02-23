@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import Card from '../components/Card';
 import '../assets/styles/Game.scss';
@@ -17,72 +17,82 @@ const Game: React.FC<{}> = (): React.ReactElement => {
 
   const [cardsPos, setcardPos] = useState<Array<card>>([]);
 
-  const handleClick = (column: number, row: number): void => {
-    if (lock && showedCount < 2) {
-      const arrayIndex = cardsPos.findIndex((element) => element.column === column && element.row === row);
+  const handleClick = useCallback(
+    (column: number, row: number): void => {
+      if (lock && showedCount < 2) {
+        const arrayIndex = cardsPos.findIndex((element) => element.column === column && element.row === row);
+        const newCardsPos = [...cardsPos];
+        newCardsPos[arrayIndex] = {
+          ...newCardsPos[arrayIndex],
+          isShowed: true,
+        };
 
-      const newCardsPos = [...cardsPos];
-      newCardsPos[arrayIndex] = {
-        ...newCardsPos[arrayIndex],
-        isShowed: true,
-      };
+        if (showedCount === 1) {
+          setTimeout(() => {
+            setShowedCount(0);
+            const firstCard = newCardsPos.findIndex((card) => card.isShowed === true);
+            const secondCard = newCardsPos.findIndex(
+              (card) => card.isShowed === true && card.correctIndentifier === newCardsPos[firstCard]?.correctIndentifier
+            );
 
-      if (showedCount === 1) {
-        setTimeout(() => {
-          setShowedCount(0);
-          const firstCard = newCardsPos.findIndex((card) => card.isShowed === true);
-          const secondCard = newCardsPos.findIndex(
-            (card) => card.isShowed === true && card.correctIndentifier === newCardsPos[firstCard]?.correctIndentifier
-          );
+            if (firstCard !== -1) newCardsPos[firstCard].isShowed = false;
+            if (secondCard !== -1) newCardsPos[secondCard].isShowed = false;
+            newCardsPos.forEach((card) => {
+              card.isShowed = false;
+            });
 
-          if (firstCard !== -1) newCardsPos[firstCard].isShowed = false;
-          if (secondCard !== -1) newCardsPos[secondCard].isShowed = false;
-          newCardsPos.forEach((card) => {
-            card.isShowed = false;
-          });
-
-          const updateGame = async () => {
-            try {
-              const response = await axios.put('/api/game', {
-                cardData: newCardsPos,
-                gameData: { gameId: gameData.gameId, playerId: gameData.playerId, playerNo: gameData.playerNo },
-                nextTurn: true,
-              });
-              if (response.data.playerTurn === gameData.playerNo) {
-                changeLock(true);
-              } else {
-                changeLock(false);
+            const updateGame = async () => {
+              try {
+                const response = await axios.put('/api/game', {
+                  cardData: newCardsPos,
+                  gameData: {
+                    gameId: gameData.gameId,
+                    playerId: gameData.playerId,
+                    playerNo: gameData.playerNo,
+                  },
+                  nextTurn: true,
+                });
+                if (response.data.playerTurn === gameData.playerNo) {
+                  changeLock(true);
+                } else {
+                  changeLock(false);
+                }
+              } catch (err) {
+                console.log(err);
               }
-            } catch (err) {
-              console.log(err);
-            }
-          };
-          updateGame();
-        }, 2000);
-      }
-
-      setShowedCount(showedCount + 1);
-      setcardPos(newCardsPos);
-
-      const updateGame = async () => {
-        try {
-          await axios.put('/api/game', {
-            cardData: newCardsPos,
-            gameData: { gameId: gameData.gameId, playerId: gameData.playerId, playerNo: gameData.playerNo },
-          });
-        } catch (err) {
-          console.log(err);
+            };
+            updateGame();
+          }, 3000);
         }
-      };
-      updateGame();
-    }
-  };
+
+        setShowedCount(showedCount + 1);
+        setcardPos(newCardsPos);
+
+        const updateGame = async () => {
+          try {
+            await axios.put('/api/game', {
+              cardData: newCardsPos,
+              gameData: {
+                gameId: gameData.gameId,
+                playerId: gameData.playerId,
+                playerNo: gameData.playerNo,
+              },
+            });
+          } catch (err) {
+            console.log(err);
+          }
+        };
+        updateGame();
+      }
+    },
+    [cardsPos, gameData.gameId, gameData.playerId, gameData.playerNo, lock, showedCount]
+  );
 
   useEffect(() => {
     const updateGame = async () => {
       try {
         const response = await axios.post('/api/game', { gameId: gameData.gameId, playerId: gameData.playerId, playerNo: gameData.playerNo });
-        console.log(response);
+
         if (response.data.playerTurn === gameData.playerNo) {
           changeLock(true);
         } else {
@@ -96,8 +106,7 @@ const Game: React.FC<{}> = (): React.ReactElement => {
             cardSorted.push(cards[cards.findIndex((element: card) => element.column === j && element.row === i)]);
           }
         }
-
-        setcardPos(cardSorted);
+        if (cardSorted !== cardsPos) setcardPos(cardSorted);
       } catch (err) {
         console.log(err);
       }
