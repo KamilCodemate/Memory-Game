@@ -15,6 +15,8 @@ const Game: React.FC<{}> = (): React.ReactElement => {
   );
   const [lock, changeLock] = useState<boolean>(gameData.playerNo === 0);
   const [showedCount, setShowedCount] = useState<number>(0);
+  const [lockRender, setLockRender] = useState<boolean>(false);
+  const [points, setPoints] = useState<[p1Points: number, p2Points: number]>([0, 0]);
 
   const [cardsPos, setcardPos] = useState<Array<card>>([]);
 
@@ -23,6 +25,7 @@ const Game: React.FC<{}> = (): React.ReactElement => {
       if (lock && showedCount < 2) {
         const arrayIndex = cardsPos.findIndex((element) => element.column === column && element.row === row);
         const newCardsPos = [...cardsPos];
+        setLockRender(true);
         newCardsPos[arrayIndex] = {
           ...newCardsPos[arrayIndex],
           isShowed: true,
@@ -44,6 +47,10 @@ const Game: React.FC<{}> = (): React.ReactElement => {
             if (secondCard && firstCard) {
               firstCard.isDeleted = true;
               secondCard.isDeleted = true;
+              const newPoints = points;
+              newPoints[gameData.playerNo as number] += 1;
+              setPoints(newPoints);
+              console.log(points);
             }
 
             const updateGame = async () => {
@@ -94,33 +101,35 @@ const Game: React.FC<{}> = (): React.ReactElement => {
   );
 
   useEffect(() => {
-    const updateGame = async () => {
-      try {
-        const response = await axios.post('/api/game', { gameId: gameData.gameId, playerId: gameData.playerId, playerNo: gameData.playerNo });
+    if (!lockRender) {
+      const updateGame = async () => {
+        try {
+          const response = await axios.post('/api/game', { gameId: gameData.gameId, playerId: gameData.playerId, playerNo: gameData.playerNo });
 
-        if (response.data.playerTurn === gameData.playerNo) {
-          changeLock(true);
-        } else {
-          changeLock(false);
-        }
-
-        const cards = response.data.cards;
-        let cardSorted: Array<card> = [];
-        for (let i = 0; i < 4; i++) {
-          for (let j = 0; j < 7; j++) {
-            cardSorted.push(cards[cards.findIndex((element: card) => element.column === j && element.row === i)]);
+          if (response.data.playerTurn === gameData.playerNo) {
+            changeLock(true);
+          } else {
+            changeLock(false);
           }
+
+          const cards = response.data.cards;
+          let cardSorted: Array<card> = [];
+          for (let i = 0; i < 4; i++) {
+            for (let j = 0; j < 7; j++) {
+              cardSorted.push(cards[cards.findIndex((element: card) => element.column === j && element.row === i)]);
+            }
+          }
+          if (cardSorted !== cardsPos) setcardPos(cardSorted);
+        } catch (err) {
+          console.log(err);
         }
-        if (cardSorted !== cardsPos) setcardPos(cardSorted);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    const sendReq = setInterval(updateGame, 200);
-    updateGame();
-    return () => {
-      clearInterval(sendReq);
-    };
+      };
+      const sendReq = setInterval(updateGame, 200);
+      updateGame();
+      return () => {
+        clearInterval(sendReq);
+      };
+    }
   }, []);
   return (
     <div className='gameContainer'>

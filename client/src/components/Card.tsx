@@ -23,7 +23,7 @@ const Card: React.FC<Props> = ({ identifier, isShowed, handleClick, isDeleted })
       <div className='card' style={{ backgroundImage: `url(${displayImage})` }} onClick={handleClick}>
         {!displayImage && (
           <Suspense fallback={<div>Loading...</div>}>
-            <img src={Images[`img${identifier + 1}` as ImageKey]} alt={`Card ${identifier}`} style={{ display: 'none' }} />
+            <img src={Images[`img${identifier + 1}` as ImageKey]} alt={`Card`} style={{ display: 'none' }} />
           </Suspense>
         )}
       </div>
