@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import Card from '../components/Card';
+import ScoreBoard from '../components/ScoreBoard';
 import '../assets/styles/Game.scss';
 type card = {
   column: number;
@@ -19,6 +20,7 @@ const Game: React.FC<{}> = (): React.ReactElement => {
   const [points, setPoints] = useState<[p1Points: number, p2Points: number]>([0, 0]);
 
   const [cardsPos, setcardPos] = useState<Array<card>>([]);
+  const [turn, setTurn] = useState<number>(0);
 
   const handleClick = useCallback(
     (column: number, row: number): void => {
@@ -108,7 +110,7 @@ const Game: React.FC<{}> = (): React.ReactElement => {
       const updateGame = async () => {
         try {
           const response = await axios.post('/api/game', { gameId: gameData.gameId, playerId: gameData.playerId, playerNo: gameData.playerNo });
-
+          setTurn(response.data.playerTurn);
           if (response.data.playerTurn === gameData.playerNo) {
             changeLock(true);
           } else {
@@ -139,6 +141,7 @@ const Game: React.FC<{}> = (): React.ReactElement => {
   }, []);
   return (
     <div className='gameContainer'>
+      <ScoreBoard playerPoints={points} actualTurn={turn} playerNo={gameData.playerNo as number} />
       <div className='cardContainer'>
         {cardsPos.map((element) => {
           return (

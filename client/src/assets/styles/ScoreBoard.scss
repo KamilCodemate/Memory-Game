@@ -1,0 +1,18 @@
+.scoreBoard {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  text-align: center;
+  margin-top: 5vh;
+  width: 100%;
+
+  .points {
+    font-size: 80px;
+    color: white;
+  }
+  .player {
+    font-size: 40px;
+    color: orange;
+    letter-spacing: 3px;
+  }
+}

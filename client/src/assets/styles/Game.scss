@@ -3,8 +3,9 @@
   height: 100vh;
   background-color: #3a3a3a;
   display: flex;
-  align-items: flex-end;
-  justify-content: center;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: column;
 }
 .cardContainer {
   display: grid;
