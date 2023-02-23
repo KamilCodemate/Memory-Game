@@ -17,6 +17,7 @@ type card = {
   row: number;
   correctIndentifier: number;
   isShowed: boolean;
+  isDeleted: boolean;
 };
 
 const generateCards = (): Promise<Array<card>> => {
@@ -31,6 +32,7 @@ const generateCards = (): Promise<Array<card>> => {
             row: Math.floor(Math.random() * 4),
             correctIndentifier: i,
             isShowed: false,
+            isDeleted: false,
           };
         } while (cardArray.find((element) => element.column === card.column && element.row === card.row));
         cardArray.push(card);

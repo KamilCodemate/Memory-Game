@@ -7,6 +7,7 @@ type card = {
   row: number;
   correctIndentifier: number;
   isShowed: boolean;
+  isDeleted: boolean;
 };
 const Game: React.FC<{}> = (): React.ReactElement => {
   const [gameData, setGameData] = useState<{ gameId: string; playerId: string; playerNo: number | string }>(
@@ -30,16 +31,20 @@ const Game: React.FC<{}> = (): React.ReactElement => {
         if (showedCount === 1) {
           setTimeout(() => {
             setShowedCount(0);
-            const firstCard = newCardsPos.findIndex((card) => card.isShowed === true);
-            const secondCard = newCardsPos.findIndex(
-              (card) => card.isShowed === true && card.correctIndentifier === newCardsPos[firstCard]?.correctIndentifier
+
+            const firstCard = newCardsPos.find((card) => card.isShowed === true);
+            const secondCard = newCardsPos.find(
+              (card) => card.isShowed === true && card.correctIndentifier === firstCard?.correctIndentifier && card !== firstCard
             );
 
-            if (firstCard !== -1) newCardsPos[firstCard].isShowed = false;
-            if (secondCard !== -1) newCardsPos[secondCard].isShowed = false;
+            console.log(firstCard, secondCard);
             newCardsPos.forEach((card) => {
               card.isShowed = false;
             });
+            if (secondCard && firstCard) {
+              firstCard.isDeleted = true;
+              secondCard.isDeleted = true;
+            }
 
             const updateGame = async () => {
               try {
@@ -125,6 +130,7 @@ const Game: React.FC<{}> = (): React.ReactElement => {
             <Card
               key={`SingleCard:Column${element.column}:Row${element.row}`}
               isShowed={element.isShowed}
+              isDeleted={element.isDeleted}
               identifier={element.correctIndentifier}
               handleClick={() => handleClick(element.column, element.row)}
             />
