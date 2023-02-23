@@ -27,7 +27,7 @@ The game uses localStorage to save important game data which means it is impossi
 
 #### Playing on diffrent machines
 
-It is possible to play the game on diffrent machines. The first option is host the app in the remote server. The second option is provide IPv4 adress in the url bar instead of `localhost` keyword. Both devices must be connected to the same network.
+It is possible to play the game on diffrent machines. The first option is host the app in the remote server. The second option is provide IPv4 adress in the adress bar instead of `localhost` keyword. Both devices must be connected to the same network.
 
 ## Solving Problems
 
@@ -37,4 +37,4 @@ On Windows: When starting the project, specifically when starting the local serv
 
 #### Other problems or bugs
 
-Notify me of them via `kamil.codemate@gmail.com`
+Notify me of them via `kamil.codemate@gmail.com` or create an issue.
