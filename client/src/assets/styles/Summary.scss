@@ -1,0 +1,38 @@
+.summary {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 50%;
+  height: 80%;
+
+  .whoWon {
+    color: white;
+    font-size: 70px;
+    font-weight: bold;
+    letter-spacing: 10px;
+  }
+  .revenge {
+    margin-top: 50px;
+    button {
+      width: 200px;
+      height: 50px;
+      background-color: #405cf5;
+      border: none;
+      border-radius: 10px;
+      font-size: 20px;
+      font-weight: bold;
+      color: rgb(34, 34, 34);
+      transition: 0.6s all;
+    }
+    button:hover {
+      background-color: #2444f7;
+      cursor: pointer;
+    }
+  }
+}

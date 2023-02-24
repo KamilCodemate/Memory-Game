@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import Card from '../components/Card';
 import ScoreBoard from '../components/ScoreBoard';
+import Summary from '../components/Summary';
 import '../assets/styles/Game.scss';
 type card = {
   column: number;
@@ -139,21 +140,53 @@ const Game: React.FC<{}> = (): React.ReactElement => {
       };
     }
   }, []);
+
+  const handleRevengeClick = useCallback((): void => {
+    const updateGame = async () => {
+      try {
+        const response = await axios.put('/api/restartgame', { gameId: gameData.gameId });
+        setTurn(response.data.playerTurn);
+        if (response.data.playerTurn === gameData.playerNo) {
+          changeLock(true);
+        } else {
+          changeLock(false);
+        }
+
+        setPoints(response.data.playerPoints || [0, 0]);
+        console.log(response);
+
+        const cards = response.data.cards;
+        let cardSorted: Array<card> = [];
+        for (let i = 0; i < 4; i++) {
+          for (let j = 0; j < 7; j++) {
+            cardSorted.push(cards[cards.findIndex((element: card) => element.column === j && element.row === i)]);
+          }
+        }
+        setcardPos(cardSorted);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    updateGame();
+  }, []);
+
   return (
     <div className='gameContainer'>
       <ScoreBoard playerPoints={points} actualTurn={turn} playerNo={gameData.playerNo as number} />
+      {cardsPos.every((card) => card.isDeleted === true) && <Summary playerPoints={points} handleRevengeClick={handleRevengeClick} />}
       <div className='cardContainer'>
-        {cardsPos.map((element) => {
-          return (
-            <Card
-              key={`SingleCard:Column${element.column}:Row${element.row}`}
-              isShowed={element.isShowed}
-              isDeleted={element.isDeleted}
-              identifier={element.correctIndentifier}
-              handleClick={() => handleClick(element.column, element.row)}
-            />
-          );
-        })}
+        {!cardsPos.every((card) => card.isDeleted === true) &&
+          cardsPos.map((element) => {
+            return (
+              <Card
+                key={`SingleCard:Column${element.column}:Row${element.row}`}
+                isShowed={element.isShowed}
+                isDeleted={element.isDeleted}
+                identifier={element.correctIndentifier}
+                handleClick={() => handleClick(element.column, element.row)}
+              />
+            );
+          })}
       </div>
     </div>
   );

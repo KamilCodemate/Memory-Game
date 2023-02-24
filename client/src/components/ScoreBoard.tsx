@@ -11,14 +11,14 @@ const ScoreBoard: React.FC<Props> = ({ playerPoints, actualTurn, playerNo }): Re
     <div className='scoreBoard'>
       <div className='player1'>
         <span className='points'>{playerPoints[0]}</span> <br />
-        <span className='player' style={actualTurn ? { textDecoration: `underline` } : {}}>
+        <span className='player' style={!actualTurn ? { textDecoration: `underline` } : {}}>
           Player 1{playerNo === 0 ? ` (You)` : ''}
         </span>
       </div>
       <div className='player2'>
         <span className='points'>{playerPoints[1]}</span>
         <br />
-        <span className='player' style={!actualTurn ? { textDecoration: `underline` } : {}}>
+        <span className='player' style={actualTurn ? { textDecoration: `underline` } : {}}>
           Player 2{playerNo === 1 ? ` (You)` : ''}
         </span>
       </div>
