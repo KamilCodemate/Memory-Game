@@ -1,7 +1,7 @@
 # Memory Game
 
 ### Multiplayer Memory Game made with React, Node, Express, TypeScript
-
+*The repository is public for reference purposes. The game still contains many bugs and many features are not implemented.*
 <br>
 
 ## Running the Game
