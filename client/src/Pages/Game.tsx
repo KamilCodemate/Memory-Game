@@ -43,7 +43,6 @@ const Game: React.FC<{}> = (): React.ReactElement => {
               (card) => card.isShowed === true && card.correctIndentifier === firstCard?.correctIndentifier && card !== firstCard
             );
 
-            console.log(firstCard, secondCard);
             newCardsPos.forEach((card) => {
               card.isShowed = false;
             });
@@ -53,13 +52,10 @@ const Game: React.FC<{}> = (): React.ReactElement => {
               secondCard.isDeleted = true;
 
               newPoints[gameData.playerNo as number] += 1;
-
-              console.log(newPoints);
             }
 
             const updateGame = async () => {
               try {
-                console.log(newPoints);
                 const response = await axios.put('/api/game', {
                   cardData: newCardsPos,
                   gameData: {
@@ -68,7 +64,7 @@ const Game: React.FC<{}> = (): React.ReactElement => {
                     playerNo: gameData.playerNo,
                     playerPoints: newPoints,
                   },
-                  nextTurn: true,
+                  nextTurn: !(secondCard && firstCard),
                 });
                 if (response.data.playerTurn === gameData.playerNo) {
                   changeLock(true);
@@ -118,7 +114,6 @@ const Game: React.FC<{}> = (): React.ReactElement => {
           }
 
           setPoints(response.data.playerPoints || [0, 0]);
-          console.log(response);
 
           const cards = response.data.cards;
           let cardSorted: Array<card> = [];
@@ -143,25 +138,7 @@ const Game: React.FC<{}> = (): React.ReactElement => {
   const handleRevengeClick = useCallback((): void => {
     const updateGame = async () => {
       try {
-        const response = await axios.put('/api/restartgame', { gameId: gameData.gameId });
-        setTurn(response.data.playerTurn);
-        if (response.data.playerTurn === gameData.playerNo) {
-          changeLock(true);
-        } else {
-          changeLock(false);
-        }
-
-        setPoints(response.data.playerPoints || [0, 0]);
-        console.log(response);
-
-        const cards = response.data.cards;
-        let cardSorted: Array<card> = [];
-        for (let i = 0; i < 4; i++) {
-          for (let j = 0; j < 7; j++) {
-            cardSorted.push(cards[cards.findIndex((element: card) => element.column === j && element.row === i)]);
-          }
-        }
-        setcardPos(cardSorted);
+        await axios.put('/api/restartgame', { gameId: gameData.gameId });
       } catch (err) {
         console.log(err);
       }
