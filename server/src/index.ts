@@ -1,5 +1,5 @@
 import express from 'express';
-import CodeRouter from './routes/code';
+import CodeRouter from './routes/Code';
 import JoinRouter from './routes/Join';
 import GameRouter from './routes/Game';
 import CheckGame from './controllers/CheckGame';
