@@ -84,7 +84,6 @@ const Game: React.FC<{}> = (): React.ReactElement => {
         }
 
         setShowedCount(showedCount + 1);
-        setcardPos(newCardsPos);
 
         const updateGame = async () => {
           try {

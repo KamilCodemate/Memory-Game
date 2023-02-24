@@ -20,7 +20,10 @@ const Card: React.FC<Props> = ({ identifier, isShowed, handleClick, isDeleted })
 
   if (!isDeleted)
     retElement = (
-      <div className='card' style={{ backgroundImage: `url(${displayImage})` }} onClick={handleClick}>
+      <div className='card' onClick={handleClick} style={{ transform: isShowed ? `rotateX(180deg)` : '' }}>
+        <div className='back' style={{ backgroundImage: `url(${displayImage})` }}></div>
+        <div className='front' style={{ backgroundColor: `black` }}></div>
+
         {!displayImage && (
           <Suspense fallback={<div>Loading...</div>}>
             <img src={Images[`img${identifier + 1}` as ImageKey]} alt={`Card`} style={{ display: 'none' }} />
@@ -29,7 +32,7 @@ const Card: React.FC<Props> = ({ identifier, isShowed, handleClick, isDeleted })
       </div>
     );
   else retElement = <div className='card' style={{ backgroundColor: `#3a3a3a`, border: `1px solid #3a3a3a` }}></div>;
-  return retElement;
+  return <div className='cardWrapper'>{retElement}</div>;
 };
 
 export default Card;
