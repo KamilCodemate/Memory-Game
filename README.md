@@ -1,7 +1,7 @@
 # Memory Game
 
 ### Multiplayer Memory Game made with React, Node, Express, TypeScript
-*The repository is public for reference purposes. The game still contains many bugs and many features are not implemented.*
+
 <br>
 
 ## Running the Game
@@ -19,6 +19,8 @@
 4. You may to install typscript globally `npm install -g typescript`
 5. Run `npm run start` both in the `/client` and `/server` directiories
 
+<br>
+
 ## Testing/Playing
 
 #### Playing on one machine
@@ -28,6 +30,8 @@ The game uses localStorage to save important game data which means it is impossi
 #### Playing on diffrent machines
 
 It is possible to play the game on diffrent machines. The first option is host the app in the remote server. The second option is provide IPv4 adress in the adress bar instead of `localhost` keyword. Both devices must be connected to the same network.
+
+<br>
 
 ## Solving Problems
 
