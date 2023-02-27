@@ -102,10 +102,12 @@ const Game: React.FC<{}> = (): React.ReactElement => {
   );
 
   useEffect(() => {
+    console.log(lockRender);
     if (!lockRender) {
       const updateGame = async () => {
         try {
           const response = await axios.post('/api/game', { gameId: gameData.gameId, playerId: gameData.playerId, playerNo: gameData.playerNo });
+          console.log(response);
           setTurn(response.data.playerTurn);
           if (response.data.playerTurn === gameData.playerNo) {
             changeLock(true);
@@ -138,7 +140,8 @@ const Game: React.FC<{}> = (): React.ReactElement => {
   const handleRevengeClick = useCallback((): void => {
     const updateGame = async () => {
       try {
-        await axios.put('/api/restartgame', { gameId: gameData.gameId });
+        const response = await axios.put('/api/restartgame', { gameId: gameData.gameId });
+        console.log(response);
       } catch (err) {
         console.log(err);
       }

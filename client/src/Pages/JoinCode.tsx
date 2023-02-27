@@ -63,10 +63,6 @@ const JoinCode: React.FC<{}> = (): React.ReactElement => {
     };
   }, [gameId, gameId2]);
 
-  useEffect(() => {
-    console.log(joinCodeProvider);
-  }, [joinCodeProvider]);
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setJoinCodeProvider(e.target.value);
   };
@@ -88,7 +84,11 @@ const JoinCode: React.FC<{}> = (): React.ReactElement => {
         console.log(err);
       }
     };
-    sendCode();
+    if (joinCodeProvider === joinCode) {
+      alert('You entered your own join code!');
+    } else {
+      sendCode();
+    }
   };
   return (
     <div className='container'>
